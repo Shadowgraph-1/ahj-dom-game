@@ -15,10 +15,18 @@ test('grid has 16 cells and goblin moves', async () => {
 
   const goblin = document.querySelector('img.goblin');
   expect(goblin).toBeTruthy();
+  // After initial show goblin should be visible
+  expect(goblin.style.display).not.toBe('none');
 
   const initialParent = goblin.parentElement;
-  // Advance timers to trigger one movement
-  jest.advanceTimersByTime(2100);
+
+  // after 1 second goblin should hide
+  jest.advanceTimersByTime(1000);
+  expect(goblin.style.display).toBe('none');
+
+  // after another 1 second (total 2s) goblin shows in a new cell
+  jest.advanceTimersByTime(1000);
+  expect(goblin.style.display).not.toBe('none');
   const newParent = goblin.parentElement;
   expect(newParent).not.toBe(initialParent);
   jest.useRealTimers();

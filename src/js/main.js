@@ -3,39 +3,52 @@ import goblinImg from '../assets/goblin.png';
 
 document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('game-container');
-  
+  const GRID_SIZE = 4; // размер сетки (N x N)
+  const CELLS_COUNT = GRID_SIZE * GRID_SIZE;
+
   const grid = document.createElement('div');
   grid.className = 'grid';
-  for (let i = 0; i < 16; i++) { 
+  for (let i = 0; i < CELLS_COUNT; i++) {
     const cell = document.createElement('div');
     cell.className = 'cell';
-    grid.appendChild(cell);
+    grid.append(cell);
   }
   container.appendChild(grid);
   
   // Создаём img
   const goblin = document.createElement('img');
-  goblin.src = goblinImg; 
+  goblin.src = goblinImg;
   goblin.className = 'goblin';
   goblin.alt = 'Goblin';
-  
+  goblin.style.display = 'none'; // изначально скрыт
+
   function getRandomPosition(current) {
     let newPos;
     do {
-      newPos = Math.floor(Math.random() * 16);
+      newPos = Math.floor(Math.random() * CELLS_COUNT);
     } while (newPos === current);
     return newPos;
   }
-  
 
-  let currentPos = getRandomPosition(-1);
-  grid.children[currentPos].appendChild(goblin);
-  
-  setInterval(() => {
+  let currentPos = -1;
+
+  // Показать гоблина в новом месте на 1 секунду каждые 2 секунды
+  function showGoblin() {
     const newPos = getRandomPosition(currentPos);
-    grid.children[newPos].appendChild(goblin);
+    // перемещаем узел в новую ячейку (не удаляем, просто меняем родителя)
+    grid.children[newPos].append(goblin);
+    goblin.style.display = '';
     currentPos = newPos;
-  }, 2000);
+    // через 1 секунду скрываем
+    setTimeout(() => {
+      goblin.style.display = 'none';
+    }, 1000);
+  }
+
+  // Показываем сразу при загрузке
+  showGoblin();
+  // Затем каждые 2 секунды показываем в новом месте
+  setInterval(showGoblin, 2000);
 });
 
 const movies = [
